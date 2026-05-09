@@ -1,0 +1,351 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Piramal #130 MMU-UI Mi-Fi Migration Prototype</title>
+  <style>
+    :root {
+      --bg: #f6f7f9;
+      --panel: #ffffff;
+      --ink: #17202a;
+      --muted: #64748b;
+      --line: #d9e0e8;
+      --accent: #0f766e;
+      --accent-soft: #d9f3ef;
+      --warn: #8a5a00;
+      --warn-soft: #fff2c6;
+      --risk: #a93434;
+      --risk-soft: #fde7e7;
+      --focus: #2563eb;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-size: 14px;
+      line-height: 1.45;
+    }
+
+    main {
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 24px;
+    }
+
+    .topbar {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 16px;
+      align-items: end;
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 16px;
+      margin-bottom: 20px;
+    }
+
+    h1, h2, h3, p {
+      margin: 0;
+    }
+
+    h1 {
+      font-size: 24px;
+      font-weight: 720;
+    }
+
+    h2 {
+      font-size: 16px;
+      margin-bottom: 12px;
+    }
+
+    h3 {
+      font-size: 14px;
+      margin-bottom: 8px;
+    }
+
+    .muted {
+      color: var(--muted);
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 0.9fr 1.35fr;
+      gap: 18px;
+      align-items: start;
+    }
+
+    .panel {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 16px;
+      box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+    }
+
+    .stack {
+      display: grid;
+      gap: 14px;
+    }
+
+    label {
+      display: block;
+      font-size: 12px;
+      font-weight: 650;
+      color: #334155;
+      margin-bottom: 6px;
+    }
+
+    input, select {
+      width: 100%;
+      min-height: 38px;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      padding: 8px 10px;
+      background: #fff;
+      color: var(--ink);
+      font: inherit;
+    }
+
+    input:focus, select:focus, button:focus {
+      outline: 2px solid var(--focus);
+      outline-offset: 2px;
+    }
+
+    .field-row {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 8px;
+      align-items: end;
+    }
+
+    button {
+      min-height: 38px;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      padding: 8px 12px;
+      background: #fff;
+      color: var(--ink);
+      font-weight: 650;
+      cursor: default;
+    }
+
+    .primary {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #fff;
+    }
+
+    .segmented {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+    }
+
+    .segmented button {
+      background: #f8fafc;
+    }
+
+    .segmented .active {
+      background: var(--accent-soft);
+      border-color: var(--accent);
+      color: #075e56;
+    }
+
+    .claim-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-top: 16px;
+    }
+
+    .claim {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 10px;
+      background: #fbfcfd;
+    }
+
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      min-height: 24px;
+      border-radius: 999px;
+      padding: 2px 8px;
+      background: var(--accent-soft);
+      color: #075e56;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .tag.warn {
+      background: var(--warn-soft);
+      color: var(--warn);
+    }
+
+    .tag.risk {
+      background: var(--risk-soft);
+      color: var(--risk);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+
+    th, td {
+      border-bottom: 1px solid var(--line);
+      padding: 9px 8px;
+      text-align: left;
+      vertical-align: top;
+    }
+
+    th {
+      font-size: 12px;
+      color: #475569;
+      background: #f8fafc;
+    }
+
+    .notes {
+      display: grid;
+      gap: 8px;
+      padding-left: 18px;
+      margin: 0;
+    }
+
+    @media (max-width: 860px) {
+      main {
+        padding: 16px;
+      }
+
+      .topbar,
+      .grid,
+      .claim-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .segmented {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <section class="topbar">
+      <div>
+        <h1>Piramal #130 MMU-UI migration proof</h1>
+        <p class="muted">Source-tied mi-fi slice: login, service-point, and worklist/table pattern.</p>
+      </div>
+      <span class="tag warn">Reviewer evidence, not implementation</span>
+    </section>
+
+    <section class="grid">
+      <div class="stack">
+        <article class="panel">
+          <h2>Login slice</h2>
+          <div class="stack">
+            <div>
+              <label for="user">User name</label>
+              <input id="user" value="demo.operator" aria-label="User name">
+            </div>
+            <div class="field-row">
+              <div>
+                <label for="password">Password</label>
+                <input id="password" type="password" value="example" aria-label="Password">
+              </div>
+              <button aria-label="Show password">Show</button>
+            </div>
+            <button class="primary">Sign in</button>
+          </div>
+        </article>
+
+        <article class="panel">
+          <h2>Service-point slice</h2>
+          <div class="stack">
+            <div class="segmented" aria-label="Service choice">
+              <button class="active">Nurse</button>
+              <button>Lab</button>
+              <button>Pharmacy</button>
+            </div>
+            <div>
+              <label for="van">Van / facility</label>
+              <select id="van" aria-label="Facility">
+                <option>MMU-01 Primary route</option>
+                <option>MMU-02 Outreach route</option>
+              </select>
+            </div>
+            <button class="primary">Continue</button>
+          </div>
+        </article>
+      </div>
+
+      <div class="stack">
+        <article class="panel">
+          <h2>Worklist table pattern</h2>
+          <table>
+            <thead>
+              <tr>
+                <th>Patient</th>
+                <th>Flow</th>
+                <th>Status</th>
+                <th>Migration check</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Beneficiary 10021</td>
+                <td>Registration -> vitals</td>
+                <td><span class="tag">Ready</span></td>
+                <td>Table, chip, action density</td>
+              </tr>
+              <tr>
+                <td>Beneficiary 10022</td>
+                <td>Lab order pending</td>
+                <td><span class="tag warn">Waiting</span></td>
+                <td>Pagination and filters</td>
+              </tr>
+              <tr>
+                <td>Beneficiary 10023</td>
+                <td>Doctor consult</td>
+                <td><span class="tag risk">Review</span></td>
+                <td>Clinical state labels</td>
+              </tr>
+            </tbody>
+          </table>
+        </article>
+
+        <article class="panel">
+          <h2>Migration notes</h2>
+          <ul class="notes">
+            <li>Replace `mat-card`, `mat-form-field`, `matInput`, `mat-select`, radio controls, and table rows through wrapper primitives first.</li>
+            <li>Keep Bootstrap layout stable during early Zard migration; remove Bootstrap after visual parity checks.</li>
+            <li>Defer camera, IoT dialogs, datepicker, and large nurse-doctor workarea until basic controls compile and pass smoke tests.</li>
+            <li>Use this slice to ask mentor whether visual parity or workflow parity wins when Zard behavior differs from Material.</li>
+          </ul>
+        </article>
+      </div>
+    </section>
+
+    <section class="claim-grid">
+      <div class="claim">
+        <h3>Can claim</h3>
+        <p class="muted">Source audit, install attempt, build blockers, migration map, and concrete first slice.</p>
+      </div>
+      <div class="claim">
+        <h3>Cannot claim yet</h3>
+        <p class="muted">Angular 19 upgrade, Zard compile inside MMU-UI, or end-to-end clinical parity.</p>
+      </div>
+      <div class="claim">
+        <h3>Next proof</h3>
+        <p class="muted">Run build under Node 18 with Common-UI dependency path resolved, then port one real component.</p>
+      </div>
+    </section>
+  </main>
+</body>
+</html>
